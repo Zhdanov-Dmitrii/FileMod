@@ -10,8 +10,8 @@ FileWriterWithCounter::FileWriterWithCounter(unsigned char xor_byte) : FileWrite
 
 void FileWriterWithCounter::process(const QString &path_to_input_file, const QString &path_to_output_dir)
 {
-    QFile input_file(path_to_input_file);
-    if (!input_file.open(QIODevice::ReadOnly)) {
+    auto input_file = std::make_unique<QFile>(path_to_input_file);
+    if (!input_file->open(QIODevice::ReadOnly)) {
         throw std::runtime_error("Не удалось открыть входной файл:" + path_to_input_file.toStdString());
     }
 
@@ -20,18 +20,19 @@ void FileWriterWithCounter::process(const QString &path_to_input_file, const QSt
          throw std::runtime_error("Не удалось создать директорию:" + path_to_output_dir.toStdString());
     }
     QFileInfo input_file_info(path_to_input_file);
-    QString output_fil_path = output_dir.filePath(input_file_info.fileName());
+    QString output_file_path = output_dir.filePath(input_file_info.fileName());
 
-    QFile output_file(output_fil_path);
+    auto output_file = std::make_unique<QFile>(output_file_path);
     int counter = 1;
-    while(!output_file.exists()){
+    while(!output_file->exists()){
         QString new_file_name = input_file_info.baseName() + "(" +  QString::number(counter++) + ")" + input_file_info.suffix();
-        output_fil_path = output_dir.filePath(new_file_name);
+        output_file_path = output_dir.filePath(new_file_name);
+        output_file = std::make_unique<QFile>(output_file_path);
     }
 
-    if (!output_file.open(QIODevice::WriteOnly)) {
-         throw std::runtime_error("Не удалось открыть выходной файл для записи:" + output_fil_path.toStdString());
+    if (!output_file->open(QIODevice::WriteOnly)) {
+         throw std::runtime_error("Не удалось открыть выходной файл для записи:" + output_file_path.toStdString());
     }
 
-    write(input_file, output_file);
+    write(std::move(input_file), std::move(output_file));
 }

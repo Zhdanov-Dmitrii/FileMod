@@ -13,7 +13,7 @@ public:
     void process(const QString &path_to_input_file, const QString &path_to_output_dir) override;
 
 protected:
-    void write(QFile& input_file, QFile& output_file);
+    void write(std::unique_ptr<QFile> input_file, std::unique_ptr<QFile> output_file);
 };
 
 #endif // FILEWRITERPROCESSOR_H

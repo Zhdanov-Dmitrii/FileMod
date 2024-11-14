@@ -28,6 +28,7 @@ void Controller::run(const QString &input, const QString &output)
 {
     try {
         manager_->run(input, output);
+        QMessageBox::information(nullptr, "Успех", "Файл обработан");
     } catch (std::runtime_error& err) {
         QMessageBox::critical(nullptr, "Ошибка", QString(err.what()));
     }

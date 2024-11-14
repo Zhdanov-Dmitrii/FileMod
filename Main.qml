@@ -49,7 +49,7 @@ Window {
         RowLayout {
             spacing: 5
             Text {
-                text:"Путь для сохранения"
+                text:"Папка для сохранения"
             }
             TextField {
                 id: outputFilePath
@@ -139,7 +139,7 @@ Window {
                     }
 
                     controller.run(inputFilePath.text, outputFilePath.text, mask.text,
-                                   deleteFile.enabled, g1.checkedButton.text,
+                                   deleteFile.checked, g1.checkedButton.text,
                                    g2.checkedButton.text, interval.value, xorByte.value)
                 }
             }
